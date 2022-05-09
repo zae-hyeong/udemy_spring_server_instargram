@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.post.model.*;
 import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.utils.JwtService;
@@ -39,8 +40,8 @@ public class PostController {
     public BaseResponse<List<GetPostsRes>> getPosts(@RequestParam int userIdx){
         try{
 //            //jwt에서 idx 추출.
-//            int userIdxByJwt = jwtService.getUserIdx();
-            List<GetPostsRes> getPosts=postProvider.retrievePosts(userIdx);
+            int userIdxByJwt = jwtService.getUserIdx();
+            List<GetPostsRes> getPosts=postProvider.retrievePosts(userIdxByJwt);
 
             return new BaseResponse<>(getPosts);
         } catch (BaseException exception){
@@ -76,8 +77,10 @@ public class PostController {
         }
 
         try{
-//            int userIdxByJwt = jwtService.getUserIdx();
-
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(postPostReq.getUserIdx() != userIdxByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
             PostPostRes postPostRes = postService.createPost(postPostReq.getUserIdx(),postPostReq);
             return new BaseResponse<>(postPostRes);
         } catch(BaseException exception){

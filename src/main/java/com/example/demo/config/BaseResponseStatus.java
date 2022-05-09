@@ -38,6 +38,9 @@ public enum BaseResponseStatus {
     POST_POSTS_EMPTY_IMGRUL(false, 2023, "포스트하려는 이미지url이 없습니다."),
     POST_POSTS_INVALID_CONTENTS(false, 2024, "포스트의 글자수를 확인해주세요."),
 
+    POST_USERS_EMPTY_PASSWORD(false, 2025, "비밀번호를 입력해주세요."),
+    POST_USERS_INVALID_PASSWORD(false, 2026, "비밀번호 형식을 확인해주세요."),
+
     /**
      * 3000 : Response 오류
      */

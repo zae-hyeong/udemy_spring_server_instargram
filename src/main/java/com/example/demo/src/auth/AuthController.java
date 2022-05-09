@@ -2,6 +2,9 @@ package com.example.demo.src.auth;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.auth.model.PostLoginReq;
+import com.example.demo.src.auth.model.PostLoginRes;
+import com.example.demo.src.post.model.GetPostsRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 //import static com.example.demo.utils.ValidationRegex.isRegexNickName;
 
 @RestController
@@ -29,6 +33,29 @@ public class AuthController {
         this.authProvider = authProvider;
         this.authService = authService;
         this.jwtService = jwtService;
+    }
+
+    @ResponseBody
+    @PostMapping("/login")
+    public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
+        try{
+            PostLoginRes postLoginRes= authService.login(postLoginReq);
+
+            //validation 처리
+            if(postLoginReq.getEmail() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+            }
+            if(postLoginReq.getPw() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+            }
+            if(!isRegexEmail(postLoginReq.getEmail())){
+                return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+            }
+
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
 
 }
