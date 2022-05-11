@@ -25,17 +25,43 @@ public class UserController {
     @Autowired
     private final JwtService jwtService;
 
-
-
-
     public UserController(UserProvider userProvider, UserService userService, JwtService jwtService){
         this.userProvider = userProvider;
         this.userService = userService;
         this.jwtService = jwtService;
     }
 
+    /**
+     * 회원가입 API
+     * [POST] /users
+     * @return BaseResponse<PostUserRes>
+     */
+    // Body
+    @ResponseBody
+    @PostMapping("") // (POST) 127.0.0.1:9000/users
+    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
+        //이메일 없음
+        if(postUserReq.getEmail() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+        // 이메일 정규표현
+        if(!isRegexEmail(postUserReq.getEmail())){
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        }
+        try{
+            PostUserRes postUserRes = userService.createUser(postUserReq);
+            return new BaseResponse<>(postUserRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
-
+    /**
+     * 유저 피드 조회 API
+     * @param userIdx
+     * @return
+     */
     @ResponseBody
     @GetMapping("/{userIdx}") // GetMapping 파라미터로 GET메소드를 명시해줌. 파라미터로 명시된 게 없으면 기본값으로 (GET) 127.0.0.1:9000/users 가 들어감
     public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx") int userIdx) { // RequestParam~ 부분이 쿼리스트링으로 이메일을 받겠다고 명시를 해준 것
@@ -61,30 +87,6 @@ public class UserController {
         }
     }
 
-    /**
-     * 회원가입 API
-     * [POST] /users
-     * @return BaseResponse<PostUserRes>
-     */
-    // Body
-    @ResponseBody
-    @PostMapping("") // (POST) 127.0.0.1:9000/users
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-        if(postUserReq.getEmail() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
-        }
-        // 이메일 정규표현
-        if(!isRegexEmail(postUserReq.getEmail())){
-            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
-        }
-        try{
-            PostUserRes postUserRes = userService.createUser(postUserReq);
-            return new BaseResponse<>(postUserRes);
-        } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
 
     /**
      * 유저정보변경 API
