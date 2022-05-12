@@ -24,7 +24,6 @@ public class UserService {
     private final UserProvider userProvider;
     private final JwtService jwtService;
 
-
     @Autowired
     public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
         this.userDao = userDao;
@@ -32,7 +31,6 @@ public class UserService {
         this.jwtService = jwtService;
 
     }
-
 
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         // 이메일 중복 확인 (의미적 validation! controller에서 형식적 validation을 처리, provider와 service에서 논리적 validation 처리)
@@ -44,17 +42,17 @@ public class UserService {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
 
-        String pwd;
+        String encryptPw; //암호화되는 비밀번호
         try{
             //암호화
-            pwd = new SHA256().encrypt(postUserReq.getPassword());  postUserReq.setPassword(pwd);
+            encryptPw = new SHA256().encrypt(postUserReq.getPw());
+            postUserReq.setPw(encryptPw);
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
         try{
             int userIdx = userDao.createUser(postUserReq);
-            //jwt 발급.
-            // TODO: jwt는 다음주차에서 배울 내용입니다!
+            //jwt 발급
             String jwt = jwtService.createJwt(userIdx);
             return new PostUserRes(jwt,userIdx);
         } catch (Exception exception) {
@@ -72,5 +70,4 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
 }
