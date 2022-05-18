@@ -25,9 +25,8 @@ public class AuthDao {
                         rs.getString("name"),
                         rs.getString("nickName"),
                         rs.getString("email"),
-                        rs.getString("phone"),
+//                        rs.getString("phone"),
                         rs.getString("pw")),
                 getPwParams);
     }
-
 }
