@@ -35,13 +35,18 @@ public class PostController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * posts (전체) 조회 API
+     * @param
+     * @return BaseResponse
+     */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetPostsRes>> getPosts(@RequestParam int userIdx){
+    public BaseResponse<List<GetPostsRes>> getPosts(){
         try{
-//            //jwt에서 idx 추출.
+            //jwt에서 idx 추출.
             int userIdxByJwt = jwtService.getUserIdx();
-            List<GetPostsRes> getPosts=postProvider.retrievePosts(userIdxByJwt);
+            List<GetPostsRes> getPosts = postProvider.retrievePosts(userIdxByJwt);
 
             return new BaseResponse<>(getPosts);
         } catch (BaseException exception){
@@ -49,20 +54,11 @@ public class PostController {
         }
     }
 
-//    @ResponseBody
-//    @GetMapping("")
-//    public BaseResponse<List<GetPostsRes>> getPosts(){
-//        try{
-//            //jwt에서 idx 추출.
-//            int userIdxByJwt = jwtService.getUserIdx();
-//            List<GetPostsRes> getPosts=postProvider.retrievePosts(userIdxByJwt);
-//
-//            return new BaseResponse<>(getPosts);
-//        } catch (BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
-
+    /**
+     * post 생성 API
+     * @param postPostReq
+     * @return BaseResponse
+     */
     @ResponseBody
     @PostMapping("")
     public BaseResponse<PostPostRes> createPost(@RequestBody PostPostReq postPostReq) {
@@ -88,7 +84,12 @@ public class PostController {
         }
     }
 
-    // 게시글 수정
+    /**
+     * 게시글 수정
+     * @param postIdx
+     * @param patchPostReq
+     * @return BaseResponse
+     */
     @ResponseBody
     @PatchMapping("/{postIdx}")
     public BaseResponse<String> modifyPost(@PathVariable("postIdx") int postIdx, @RequestBody PatchPostReq patchPostReq){
@@ -100,10 +101,10 @@ public class PostController {
         }
         try {
             //jwt에서 idx 추출.
-//            int userIdxByJwt = jwtService.getUserIdx();
+            //int userIdxByJwt = jwtService.getUserIdx();
 
-            postService.modifyPost(patchPostReq.getUserIdx(),postIdx,patchPostReq);
-            String result = "회원정보 수정을 완료하였습니다.";
+            postService.modifyPost(patchPostReq.getUserIdx(), postIdx, patchPostReq);
+            String result = "게시물 수정을 완료하였습니다.";
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -112,13 +113,13 @@ public class PostController {
 
     // 게시물 삭제
     @ResponseBody
-    @PatchMapping("/{postIdx}/status")
-    public BaseResponse<String> deleteUser(@PathVariable("postIdx") int postIdx){
+    @PatchMapping("/{userIdx}/{postIdx}/status")
+    public BaseResponse<String> deletePost(@PathVariable("postIdx") int postIdx){
         try {
 
-//            //jwt에서 idx 추출.
-//            int userIdxByJwt = jwtService.getUserIdx();
-            postService.deletePost(postIdx);
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            postService.deletePost(userIdxByJwt, postIdx);
 
             String result = "삭제되었습니다.";
             return new BaseResponse<>(result);

@@ -21,10 +21,6 @@ public class PostDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-
-
-
-
     // 유저 확인
     public int checkUserExist(int userIdx){
         String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
@@ -169,8 +165,8 @@ public class PostDao {
 
     //게시글 삭제
     public int deletePost(int postIdx){
-        String deleteUserQuery = "UPDATE Post\n" +
-                "        SET status = 'INACTIVE'\n" +
+        String deleteUserQuery = "UPDATE Post" +
+                "        SET status = 'INACTIVE'" +
                 "        WHERE postIdx = ? ";
         Object[] deleteUserParams = new Object[]{postIdx};
 

@@ -30,8 +30,6 @@ public class PostProvider {
         this.jwtService = jwtService;
     }
 
-
-
     // 유저 확인
     public int checkUserExist(int userIdx) throws BaseException{
         try{
