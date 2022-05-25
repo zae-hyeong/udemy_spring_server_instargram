@@ -34,7 +34,6 @@ public class UserProvider {
         this.jwtService = jwtService;
     }
 
-
     public GetUserFeedRes retrieveUserFeed(int userIdxByJwt, int userIdx) throws BaseException{
         Boolean isMyFeed = true;
 
@@ -56,23 +55,12 @@ public class UserProvider {
         }
     }
 
-
     public GetUserRes getUsersByIdx(int userIdx) throws BaseException{
         try{
             GetUserRes getUsersRes = userDao.getUsersByIdx(userIdx);
             return getUsersRes;
         }
         catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-
-    public int checkEmail(String email) throws BaseException{
-        try{
-            return userDao.checkEmail(email);   // Dao에서 이메일을 체크하는 걸 넘겨줌, checkEmail()에는 현재 이메일이 존재하는지 확인하는 쿼리가 있음
-        } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
     }

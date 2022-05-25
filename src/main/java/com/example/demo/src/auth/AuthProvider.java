@@ -27,4 +27,11 @@ public class AuthProvider {
         this.jwtService = jwtService;
     }
 
+    public int checkEmail(String email) throws BaseException{
+        try{
+            return authDao.checkEmail(email);   // Dao에서 이메일을 체크하는 걸 넘겨줌, checkEmail()에는 현재 이메일이 존재하는지 확인하는 쿼리가 있음
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

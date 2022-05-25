@@ -97,24 +97,6 @@ public class UserDao {
                 getUsersByIdxParams);
     }
 
-    public int createUser(PostUserReq postUserReq){
-        String createUserQuery = "insert into User (name, nickName, email, password) VALUES (?,?,?,?)";
-        Object[] createUserParams = new Object[]{postUserReq.getName(), postUserReq.getNickName(), postUserReq.getEmail(), postUserReq.getPw()};
-        this.jdbcTemplate.update(createUserQuery, createUserParams);
-
-        String lastInsertIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
-    }
-
-    public int checkEmail(String email){
-        String checkEmailQuery = "select exists(select email from User where email = ?)";   // 현재 이메일이 존재하는지 확인하는 쿼리
-        String checkEmailParams = email;
-        return this.jdbcTemplate.queryForObject(checkEmailQuery,
-                int.class,
-                checkEmailParams);
-
-    }
-
     public int checkUserExist(int userIdx){
         String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";   // 현재 이메일이 존재하는지 확인하는 쿼리
         int checkUserExistParams = userIdx;

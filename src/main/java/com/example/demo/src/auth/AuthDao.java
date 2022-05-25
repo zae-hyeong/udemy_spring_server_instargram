@@ -2,11 +2,11 @@ package com.example.demo.src.auth;
 
 import com.example.demo.src.auth.model.PostLoginReq;
 import com.example.demo.src.auth.model.User;
+import com.example.demo.src.auth.model.PostSignupReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class AuthDao {
@@ -28,5 +28,22 @@ public class AuthDao {
 //                        rs.getString("phone"),
                         rs.getString("password")),
                 getPwParams);
+    }
+
+    public int createUser(PostSignupReq postSignupReq){
+        String createUserQuery = "insert into User (name, nickName, email, password) VALUES (?,?,?,?)";
+        Object[] createUserParams = new Object[]{postSignupReq.getName(), postSignupReq.getNickName(), postSignupReq.getEmail(), postSignupReq.getPw()};
+        this.jdbcTemplate.update(createUserQuery, createUserParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+    }
+
+    public int checkEmail(String email){
+        String checkEmailQuery = "select exists(select email from User where email = ?)";   // 현재 이메일이 존재하는지 확인하는 쿼리
+        String checkEmailParams = email;
+        return this.jdbcTemplate.queryForObject(checkEmailQuery,
+                int.class,
+                checkEmailParams);
     }
 }

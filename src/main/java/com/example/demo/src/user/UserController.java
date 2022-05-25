@@ -32,31 +32,6 @@ public class UserController {
     }
 
     /**
-     * 회원가입 API
-     * [POST] /users
-     * @return BaseResponse<PostUserRes>
-     */
-    @ResponseBody
-    @PostMapping("") // (POST) 127.0.0.1:9000/users
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-
-        if(postUserReq.getEmail() == null){ //이메일 없음
-            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
-        }
-        if(!isRegexEmail(postUserReq.getEmail())){ // 이메일 정규표현
-            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
-        }
-
-        try{
-            PostUserRes postUserRes = userService.createUser(postUserReq);
-            return new BaseResponse<>(postUserRes);
-        } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
-
-    /**
      * 유저 피드 조회 API
      * @param userIdx
      * @return
