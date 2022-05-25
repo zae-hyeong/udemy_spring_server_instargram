@@ -34,12 +34,14 @@ public class AuthService {
     }
 
     public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
-        User user = authDao.getUser(postLoginReq);
+        User user = authDao.getUserPw(postLoginReq);
         String encryptPw;
 
         try{
             //암호화 : 이렇게 하려면 비밀번호를 암호화해서 DB에 넣는 전처리 과정이 필요함
-            encryptPw = new SHA256().encrypt(postLoginReq.getPw());
+            //지금은 로그인이기 때문에 입력받은 비밀번호의 암호화 버전과 DB의 압호화된 비밀번호가 일치하는지 비교
+            new SHA256();
+            encryptPw = SHA256.encrypt(postLoginReq.getPw());
         } catch(Exception exception){
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
