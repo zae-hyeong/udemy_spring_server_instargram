@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_EMPTY_EMAIL;
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_INVALID_EMAIL;
+import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 @RestController
@@ -37,7 +36,6 @@ public class UserController {
      * [POST] /users
      * @return BaseResponse<PostUserRes>
      */
-    // Body
     @ResponseBody
     @PostMapping("") // (POST) 127.0.0.1:9000/users
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
@@ -98,19 +96,17 @@ public class UserController {
     @PatchMapping("/{userIdx}") // (PATCH) 127.0.0.1:9000/users/:userIdx
     public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user){
         try {
-            /* TODO: jwt는 다음주차에서 배울 내용입니다!
-            jwt에서 idx 추출.
+            //jwt에서 idx 추출.
             int userIdxByJwt = jwtService.getUserIdx();
-            userIdx와 접근한 유저가 같은지 확인
+            //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            */
 
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx,user.getNickName());
+            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickName());
             userService.modifyUserName(patchUserReq);
 
-            String result = "";
+            String result = "게시물 수정 성공";
         return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

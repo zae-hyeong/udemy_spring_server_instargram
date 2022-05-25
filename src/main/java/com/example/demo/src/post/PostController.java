@@ -87,7 +87,7 @@ public class PostController {
     /**
      * 게시글 수정
      * @param postIdx
-     * @param patchPostReq
+     * @param postIdx, patchPostReq
      * @return BaseResponse
      */
     @ResponseBody
@@ -100,8 +100,11 @@ public class PostController {
             return new BaseResponse<>(POST_POSTS_INVALID_CONTENTS);
         }
         try {
-            //jwt에서 idx 추출.
-            //int userIdxByJwt = jwtService.getUserIdx();
+            //jwt에서 idx 추출, 비교
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(patchPostReq.getUserIdx() != userIdxByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
 
             postService.modifyPost(patchPostReq.getUserIdx(), postIdx, patchPostReq);
             String result = "게시물 수정을 완료하였습니다.";
@@ -111,14 +114,20 @@ public class PostController {
         }
     }
 
-    // 게시물 삭제
+    /**
+     * 게시물 삭제 API
+     * @param postIdx
+     * @return BaseResponse
+     */
     @ResponseBody
     @PatchMapping("/{userIdx}/{postIdx}/status")
-    public BaseResponse<String> deletePost(@PathVariable("postIdx") int postIdx){
+    public BaseResponse<String> deletePost(@PathVariable("userIdx") int userIdx, @PathVariable("postIdx") int postIdx){
         try {
-
-            //jwt에서 idx 추출.
             int userIdxByJwt = jwtService.getUserIdx();
+            if(userIdx != userIdxByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
             postService.deletePost(userIdxByJwt, postIdx);
 
             String result = "삭제되었습니다.";

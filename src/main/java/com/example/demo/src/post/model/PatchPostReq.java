@@ -10,5 +10,4 @@ import lombok.Setter;
 public class PatchPostReq {
     private int userIdx;
     private String content;
-//    PatchPostReq(){};
 }
