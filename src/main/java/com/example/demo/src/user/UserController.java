@@ -32,39 +32,48 @@ public class UserController {
     }
 
     /**
-     * 유저 피드 조회 API
+     * 특정 유저 피드 조회 API
+     * [GET] /users/:userIdx/feed
      * @param userIdx
-     * @return
+     * @return BaseResponse<GetUserFeedRes>
      */
     @ResponseBody
-    @GetMapping("/{userIdx}") // GetMapping 파라미터로 GET메소드를 명시해줌. 파라미터로 명시된 게 없으면 기본값으로 (GET) 127.0.0.1:9000/users 가 들어감
+    @GetMapping("/{userIdx}/feed") // GetMapping 파라미터로 GET메소드를 명시해줌. 파라미터로 명시된 게 없으면 기본값으로 (GET) 127.0.0.1:9000/users 가 들어감
     public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx") int userIdx) { // RequestParam~ 부분이 쿼리스트링으로 이메일을 받겠다고 명시를 해준 것
         // GetUserRes는 모델! 모델은 쉽게 말하면 응답값이다. 모델에서는 필요한 요청값과 응답값의 형식을 정의해줌
         try{
-            GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx,userIdx);
+            int userIdxByJwt = jwtService.getUserIdx();
+
+            //내 피드인지 구분하기 위해 유저 인덱스를 두개로 나눠서 줌
+            GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdxByJwt,userIdx); //retrieve = 검색하다
             return new BaseResponse<>(getUserFeedRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }
 
-    // 특정 유저만 조회하는 api
+    /**
+     * 특정 유저 정보 조회 API
+     * [GET] /user/:userIdx
+     * @param userIdx
+     * @return
+     */
     @ResponseBody
-    @GetMapping("/{userIdx}/x") // (GET) 127.0.0.1:9000/users/:userIdx
-    public BaseResponse<GetUserRes> getUsersByIdx(@PathVariable("userIdx") int userIdx) { // RequestParam~ 부분이 쿼리스트링으로 이메일을 받겠다고 명시를 해준 것
+    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users/:userIdx
+    public BaseResponse<GetUserRes> getUserByIdx(@PathVariable("userIdx") int userIdx) { // RequestParam~ 부분이 쿼리스트링으로 이메일을 받겠다고 명시를 해준 것
         // GetUserRes는 모델! 모델은 쉽게 말하면 응답값이다. 모델에서는 필요한 요청값과 응답값의 형식을 정의해줌
         try{
-            GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx);
+            GetUserRes getUsersRes = userProvider.getUserByIdx(userIdx);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }
 
-
     /**
-     * 유저정보변경 API
+     * 유저 정보 변경 API
      * [PATCH] /users/:userIdx
+     * @param userIdx, user
      * @return BaseResponse<String>
      */
     @ResponseBody
@@ -79,7 +88,7 @@ public class UserController {
             }
 
             PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickName());
-            userService.modifyUserName(patchUserReq);
+            userService.modifyUserName(patchUserReq); // 현재는 유저 이름만 변경이 가능함
 
             String result = "게시물 수정 성공";
         return new BaseResponse<>(result);
@@ -87,5 +96,4 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
 }

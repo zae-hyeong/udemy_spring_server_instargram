@@ -84,8 +84,7 @@ public class UserDao {
                 getUsersByEmailParams);
     }
 
-
-    public GetUserRes getUsersByIdx(int userIdx){
+    public GetUserRes getUserByIdx(int userIdx){
         String getUsersByIdxQuery = "select userIdx,name,nickName,email from User where userIdx=?";
         int getUsersByIdxParams = userIdx;
         return this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
@@ -103,17 +102,12 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkUserExistQuery,
                 int.class,
                 checkUserExistParams);
-
     }
 
     public int modifyUserName(PatchUserReq patchUserReq){
         String modifyUserNameQuery = "update User set nickName = ? where userIdx = ? ";
         Object[] modifyUserNameParams = new Object[]{patchUserReq.getNickName(), patchUserReq.getUserIdx()};
-
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
-
-
-
 
 }

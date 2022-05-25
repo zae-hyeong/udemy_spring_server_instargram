@@ -35,7 +35,7 @@ public class UserProvider {
     }
 
     public GetUserFeedRes retrieveUserFeed(int userIdxByJwt, int userIdx) throws BaseException{
-        Boolean isMyFeed = true;
+        boolean isMyFeed = true;
 
         if(checkUserExist(userIdx) == 0){
             throw new BaseException(USERS_EMPTY_USER_ID);
@@ -47,18 +47,18 @@ public class UserProvider {
 
             GetUserInfoRes getUserInfoRes = userDao.selectUserInfo(userIdx);
             List<GetUserPostsRes> getUserPosts = userDao.selectUserPosts(userIdx);
-            GetUserFeedRes getUsersRes = new GetUserFeedRes(isMyFeed, getUserInfoRes, getUserPosts);
-            return getUsersRes;
+
+            return new GetUserFeedRes(isMyFeed, getUserInfoRes, getUserPosts);
         }
         catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public GetUserRes getUsersByIdx(int userIdx) throws BaseException{
+    public GetUserRes getUserByIdx(int userIdx) throws BaseException{
         try{
-            GetUserRes getUsersRes = userDao.getUsersByIdx(userIdx);
-            return getUsersRes;
+            GetUserRes getUserRes = userDao.getUserByIdx(userIdx);
+            return getUserRes;
         }
         catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
